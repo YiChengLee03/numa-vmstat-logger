@@ -1,0 +1,64 @@
+nr_free_pages 7800052
+    nr_zone_inactive_anon 0
+    nr_zone_active_anon 15422
+    nr_zone_inactive_file 268674
+    nr_zone_active_file 28919
+    nr_zone_unevictable 7127
+    nr_zone_write_pending 47
+    nr_mlock 6359
+    nr_bounce 0
+    nr_zspages 0
+    nr_free_cma 0
+    nr_unaccepted 0
+numa_hit 9299219
+numa_miss 0
+numa_foreign 0
+numa_interleave 48
+numa_local 9293422
+numa_other 5797
+    nr_inactive_anon 0
+    nr_active_anon 15422
+    nr_inactive_file 268674
+    nr_active_file 28919
+    nr_unevictable 7127
+    nr_slab_reclaimable 17477
+    nr_slab_unreclaimable 35728
+    nr_isolated_anon 0
+    nr_isolated_file 0
+    workingset_nodes 0
+    workingset_refault_anon 0
+    workingset_refault_file 0
+    workingset_activate_anon 0
+    workingset_activate_file 0
+    workingset_restore_anon 0
+    workingset_restore_file 0
+    workingset_nodereclaim 0
+    nr_anon_pages 19925
+    nr_mapped 18743
+    nr_file_pages 300241
+    nr_dirty 47
+    nr_writeback 0
+    nr_writeback_temp 0
+    nr_shmem 1012
+    nr_shmem_hugepages 0
+    nr_shmem_pmdmapped 0
+    nr_file_hugepages 0
+    nr_file_pmdmapped 0
+    nr_anon_transparent_hugepages 0
+    nr_vmscan_write 0
+    nr_vmscan_immediate_reclaim 0
+    nr_dirtied 777858
+    nr_written 714475
+    nr_throttled_written 0
+    nr_kernel_misc_reclaimable 0
+    nr_foll_pin_acquired 256
+    nr_foll_pin_released 256
+    nr_kernel_stack 4232
+    nr_page_table_pages 786
+    nr_sec_page_table_pages 0
+    nr_swapcached 0
+    pgpromote_success 0
+    pgpromote_candidate 0
+    pgdemote_kswapd 0
+    pgdemote_direct 0
+    pgdemote_khugepaged 0
