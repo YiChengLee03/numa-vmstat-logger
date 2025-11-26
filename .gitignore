@@ -1,0 +1,15 @@
+# Compiled binaries
+numa_stat_logger
+
+# CSV logs
+src/numa_stat_log.csv
+
+# Temporary or backup files
+*.o
+*.out
+*.swp
+*.log
+*~
+
+# MacOS system files
+.DS_Store
