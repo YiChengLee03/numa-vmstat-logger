@@ -35,7 +35,7 @@ $DB_BENCH_EXEC \
     --disable_wal=1 --sync=0 --verify_checksum=1 --delete_obsolete_files_period_micros=314572800 \
     --max_background_compactions=4 --max_background_flushes=0 --level0_slowdown_writes_trigger=16 \
     --level0_stop_writes_trigger=24 \
-    --statistics=0 --histogram=1 --stats_per_interval=0 --stats_interval=0\
+    --statistics=0 --histogram=0 --stats_per_interval=0 --stats_interval=0\
     --use_plain_table=1 --open_files=-1 --mmap_read=1 --mmap_write=0 --memtablerep=prefix_hash \
     --bloom_bits=10 --bloom_locality=1 \
     --benchmarks="fillrandom,readseq,readrandom,readtocache,readwhilescanning" --use_existing_db=0 \
