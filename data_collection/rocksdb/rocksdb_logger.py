@@ -224,7 +224,7 @@ def run_benchmark_and_logger(
         str(interval),
         "-r",
         *db_bench_helper_script,
-        db_bench_num_iter
+        str(db_bench_num_iter)
     ]
 
     print(
@@ -244,12 +244,7 @@ def run_benchmark_and_logger(
     except FileNotFoundError:
         print("One of the commands ('ls' or 'wc') was not found.")
     except Exception as e:
-        print(e.stderr, file=sys.stderr, end="")
-
-    if result.stdout:
-        print(result.stdout, end="")
-    if result.stderr:
-        print(result.stderr, file=sys.stderr, end="")
+        print(e, file=sys.stderr, end="")
 
     return run_dir / LOGGER_OUTPUT, result.stdout or ""
 
@@ -411,9 +406,9 @@ def main() -> int:
             policy_name,
             args.interval,
             numa_nodes,
-            args.db_bench_helper_script.resolve(),
+            args.db_bench_helper_script.expanduser(),
             db_bench_num_iter[offset],
-            args.logger_binary.resolve(),
+            args.logger_binary.expanduser(),
             run_dir,
         )
         append_with_metadata(run_csv_path, raw_file, policy_name, run_index)
