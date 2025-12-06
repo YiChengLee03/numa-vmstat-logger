@@ -216,15 +216,14 @@ def run_benchmark_and_logger(
     run_dir: Path,
 ) -> Tuple[Path, str]:
     run_dir.mkdir(parents=True, exist_ok=True)
-    db_bench_helper_script = [
-        str(db_bench_helper_path.resolve()), str(db_bench_num_iter)]
+    db_bench_helper_script = f"{str(db_bench_helper_path.resolve())} {str(db_bench_num_iter)}"
 
     logger_cmd = [
         str(logger_path),
         str(numa_count),
         str(interval),
         "-r",
-        *db_bench_helper_script
+        db_bench_helper_script
     ]
 
     print(

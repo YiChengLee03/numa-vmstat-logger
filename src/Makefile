@@ -8,3 +8,6 @@ run: numa_stat_logger
 
 run_executable: numa_stat_logger
 	./script.sh ./dummy_executable_benchmark.sh 
+
+clean:
+	rm numa_stat_logger
