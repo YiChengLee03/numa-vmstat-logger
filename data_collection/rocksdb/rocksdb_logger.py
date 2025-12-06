@@ -241,12 +241,15 @@ def run_benchmark_and_logger(
             capture_output=True,
             text=True,
         )
+
+        return run_dir / LOGGER_OUTPUT, result.stdout
+
     except FileNotFoundError:
         print("One of the commands ('ls' or 'wc') was not found.")
     except Exception as e:
         print(e, file=sys.stderr, end="")
 
-    return run_dir / LOGGER_OUTPUT, result.stdout or ""
+    return run_dir / LOGGER_OUTPUT, ""
 
 
 def append_with_metadata(
