@@ -16,13 +16,13 @@ def parse_args() -> argparse.Namespace:
         description="Run RocksDB/db_bench repeatedly while collecting NUMA stats."
     )
     parser.add_argument(
-        "--input_csv",
+        "--input-csv",
         type=Path,
         required=True,
         help="Path to raw input csv file to be preprocessed into features."
     )
     parser.add_argument(
-        "--output_csv",
+        "--output-csv",
         type=Path,
         required=True,
         help="Path to store the processed output CSV."

@@ -31,7 +31,7 @@ permissions:
 	chmod +x $(LOGGER_BINARY)
 
 run: logger permissions
-	python3 rocksdb_logger.py --runs $(RUNS) --start_run $(START_RUN) --interval $(INTERVAL) --policies $(POLICIES)
+	python3 rocksdb_logger.py --runs $(RUNS) --start-run $(START_RUN) --interval $(INTERVAL) --policies $(POLICIES)
 
 preprocess:
 	@echo "Using RAW=$(RAW)"
