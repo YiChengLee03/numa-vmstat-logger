@@ -18,7 +18,7 @@ POLICY_COMMANDS: Dict[str, List[str]] = {
     "preferred_node0": ["numactl", "--preferred=0"],
 }
 
-LOGGER_OUTPUT = "rocksdb_numa_stat_log.csv"
+LOGGER_OUTPUT = "numa_stat_log.csv"
 ROCKS_DB_FUNCTIONS = (
     "fillrandom", "readseq", "readrandom", "readtocache", "readwhilescanning"
 )
@@ -36,8 +36,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--runs",
         type=int,
-        default=100,
-        help="How many benchmark runs to execute (default: 100).",
+        default=20,
+        help="How many benchmark runs to execute (default: 20).",
     )
     parser.add_argument(
         "--start-run",
@@ -93,10 +93,10 @@ def parse_args() -> argparse.Namespace:
         help="Destination logs with mem_policy and run index columns.",
     )
     parser.add_argument(
-        "--preprocessed-file",
+        "--aggregate-benchmark-file",
         type=Path,
-        default=Path("rocksdb_logs/features.csv"),
-        help="CSV file that collects STREAM benchmark summaries per run.",
+        default=Path("rocksdb_logs/aggregate-benchmark.csv"),
+        help="CSV file that collects rocksdb/db_bench benchmark summaries per run.",
     )
     return parser.parse_args()
 
@@ -182,7 +182,7 @@ def ensure_binaries(db_bench_path: Path, logger_path: Path) -> None:
 def generate_num_intervals(
     num_intervals: int = 8,
     start: int = 10_000,
-    end: int = 5_000_000,
+    end: int = 1_000_000,
 ) -> List[int]:
     if start <= 0 or end <= 0 or start >= end or num_intervals < 2:
         return [start, end]
@@ -216,15 +216,14 @@ def run_benchmark_and_logger(
     run_dir: Path,
 ) -> Tuple[Path, str]:
     run_dir.mkdir(parents=True, exist_ok=True)
-    db_bench_cmd = [str(db_bench_helper_path.resolve()),
-                    str(db_bench_num_iter)]
 
     logger_cmd = [
         str(logger_path),
         str(numa_count),
         str(interval),
         "-r",
-        db_bench_cmd
+        str(db_bench_helper_path.resolve()),
+        str(db_bench_num_iter)
     ]
 
     print(
@@ -239,10 +238,6 @@ def run_benchmark_and_logger(
         capture_output=True,
         text=True,
     )
-    if result.stdout:
-        print(result.stdout, end="")
-    if result.stderr:
-        print(result.stderr, file=sys.stderr, end="")
 
     return run_dir / LOGGER_OUTPUT, result.stdout or ""
 
@@ -360,8 +355,6 @@ def append_benchmark_results(
             [
                 f"{row['rate']:.6f}",
                 f"{row['avg']:.9f}",
-                f"{row['min']:.9f}",
-                f"{row['max']:.9f}",
             ]
         )
 
@@ -376,9 +369,9 @@ def main() -> int:
     policies = flatten_policies(args.policies)
     suffix = build_output_file_suffix(args.start_run, policies)
 
-    raw_file = append_suffix_to_path(args.raw_file, suffix)
-    preprocessed_file = append_suffix_to_path(
-        args.preprocessed_file, suffix)
+    raw_file = append_suffix_to_path(args.raw_file, suffix).resolve()
+    aggregate_benchmark_file = append_suffix_to_path(
+        args.aggregate_benchmark_file, suffix).resolve()
 
     try:
         numa_nodes = detect_numa_nodes()
@@ -409,10 +402,11 @@ def main() -> int:
             args.logger_binary.expanduser(),
             run_dir,
         )
-        append_with_metadata(run_csv_path, raw_file, policy_name, run_index)
+        append_with_metadata(run_csv_path.resolve(),
+                             raw_file, policy_name, run_index)
         benchmark_results = parse_benchmark_results(db_bench_stdout)
         append_benchmark_results(
-            benchmark_results, preprocessed_file, policy_name, run_index)
+            benchmark_results, aggregate_benchmark_file, policy_name, run_index)
 
     print(f"All runs complete. Raw CSV: {raw_file}")
     return 0
