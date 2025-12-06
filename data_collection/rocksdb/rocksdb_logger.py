@@ -216,7 +216,8 @@ def run_benchmark_and_logger(
     run_dir: Path,
 ) -> Tuple[Path, str]:
     run_dir.mkdir(parents=True, exist_ok=True)
-    db_bench_cmd = f"{db_bench_helper_path.resolve()} {db_bench_num_iter}"
+    db_bench_cmd = [str(db_bench_helper_path.resolve()),
+                    str(db_bench_num_iter)]
 
     logger_cmd = [
         str(logger_path),
@@ -231,23 +232,19 @@ def run_benchmark_and_logger(
         flush=True,
     )
 
-    try:
-        result = subprocess.run(
-            logger_cmd,
-            check=True,
-            cwd=run_dir,
-            capture_output=True,
-            text=True,
-        )
+    result = subprocess.run(
+        logger_cmd,
+        check=True,
+        cwd=run_dir,
+        capture_output=True,
+        text=True,
+    )
+    if result.stdout:
+        print(result.stdout, end="")
+    if result.stderr:
+        print(result.stderr, file=sys.stderr, end="")
 
-        return run_dir / LOGGER_OUTPUT, result.stdout
-
-    except FileNotFoundError:
-        print("One of the commands ('ls' or 'wc') was not found.")
-    except Exception as e:
-        print(e, file=sys.stderr, end="")
-
-    return run_dir / LOGGER_OUTPUT, ""
+    return run_dir / LOGGER_OUTPUT, result.stdout or ""
 
 
 def append_with_metadata(

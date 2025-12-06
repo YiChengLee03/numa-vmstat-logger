@@ -21,6 +21,7 @@ logger:
 permissions:
 	@echo "--- Setting executable permissions ---"
 	chmod +x $(BENCH_SCRIPT)
+	chmod +x $(LOGGER_BINARY)
 
-run: clean logger permissions
+run: logger permissions
 	python3 rocksdb_logger.py
