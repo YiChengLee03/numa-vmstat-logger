@@ -3,7 +3,7 @@ BENCH_SCRIPT := benchmark_script.sh
 LOGS_DIR := rocksdb_logs/
 LOGGER_BINARY := $(LOGGER_DIR)/numa_stat_logger
 
-all: permissions logger
+all: logger permissions
 
 # 1. Clean Logs and Logger Binaries
 clean:
