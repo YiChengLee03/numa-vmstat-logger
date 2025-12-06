@@ -160,10 +160,7 @@ def main() -> int:
         'preferred_1',
     ]
 
-    # Keep extra columns after the ordered ones
-    existing = [c for c in column_order if c in out.columns]
-    remaining = [c for c in out.columns if c not in existing]
-    out = out[existing + remaining]
+    out = out[column_order]
 
     print(out.head())
 
