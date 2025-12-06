@@ -83,19 +83,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("~/rocksdb_logs"),
+        default=Path("rocksdb_logs"),
         help="Directory where logs are stored.",
     )
     parser.add_argument(
         "--raw-file",
         type=Path,
-        default=Path("~/rocksdb_logs/raw.csv"),
+        default=Path("rocksdb_logs/raw.csv"),
         help="Destination logs with mem_policy and run index columns.",
     )
     parser.add_argument(
         "--preprocessed-file",
         type=Path,
-        default=Path("~/rocksdb_logs/features.csv"),
+        default=Path("rocksdb_logs/features.csv"),
         help="CSV file that collects STREAM benchmark summaries per run.",
     )
     return parser.parse_args()
