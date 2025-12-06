@@ -2,6 +2,8 @@ LOGGER_DIR := ../../src
 BENCH_SCRIPT := benchmark_script.sh
 LOGS_DIR := rocksdb_logs/
 LOGGER_BINARY := $(LOGGER_DIR)/numa_stat_logger
+RAW_FILE ?= $(LOGS_DIR)/raw_start_1_policy_default.csv
+PREPROCESSED_FILE ?= $(LOGS_DIR)/features_start_1_policy_default.csv
 
 all: logger permissions
 
@@ -25,3 +27,14 @@ permissions:
 
 run: logger permissions
 	python3 rocksdb_logger.py
+
+preprocess:
+	@echo "Using RAW=$(RAW)"
+	@echo "Using OUT=$(OUT)"
+	@test -d .venv || python3 -m venv .venv
+	@bash -c " \
+		source .venv/bin/activate && \
+		pip install --upgrade pip && \
+		pip install pandas && \
+		python3 preprocess_rocksdb_log.py $(RAW_FILE) $(PREPROCESSED_FILE) \
+	"
