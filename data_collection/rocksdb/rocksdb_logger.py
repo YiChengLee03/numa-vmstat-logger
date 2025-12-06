@@ -128,26 +128,32 @@ def append_suffix_to_path(path: Path, suffix: str) -> Path:
 
 
 def detect_numa_nodes() -> int:
+    command = "ls -d /sys/devices/system/node/node* | wc -l"
+
     try:
-        ls_process = subprocess.run(
-            ["ls", "-d", "/sys/devices/system/node/node*"],
-            check=True,
-            capture_output=True
-        )
-        wc_process = subprocess.run(
-            ["wc", "-l"],
-            input=ls_process.stdout,
+        result = subprocess.run(
+            command,
+            shell=True,
             check=True,
             capture_output=True,
             text=True
         )
-        return int(wc_process.stdout.strip())
+        count_str = result.stdout.strip()
+        if not count_str:
+            return 0
+        return int(count_str)
 
+    except subprocess.CalledProcessError as e:
+        print(
+            f"Error running NUMA detection command (Exit Status {e.returncode}):")
+        print(f"Stderr: {e.stderr.strip()}")
+        return None
     except FileNotFoundError:
-        print("One of the commands ('ls' or 'wc') was not found.")
+        print("System shell or necessary command ('ls', 'wc') not found.")
+        return None
     except Exception as e:
-        print(f"Error running command: {e}")
-        print(f"Stderr: {e.stderr}")
+        print(f"An unexpected error occurred: {e}")
+        return None
 
 
 def ensure_binaries(db_bench_path: Path, logger_path: Path) -> None:
@@ -229,6 +235,7 @@ def run_benchmark_and_logger(
     try:
         result = subprocess.run(
             logger_cmd,
+            shell=True,
             check=True,
             cwd=run_dir,
             capture_output=True,
