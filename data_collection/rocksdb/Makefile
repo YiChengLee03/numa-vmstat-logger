@@ -21,3 +21,6 @@ logger:
 permissions:
 	@echo "--- Setting executable permissions ---"
 	chmod +x $(BENCH_SCRIPT)
+
+run: BENCH_SCRIPT LOGGER_BINARY
+	python3 rocksdb_logger.py

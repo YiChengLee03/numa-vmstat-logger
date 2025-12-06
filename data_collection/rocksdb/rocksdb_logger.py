@@ -216,14 +216,14 @@ def run_benchmark_and_logger(
     run_dir: Path,
 ) -> Tuple[Path, str]:
     run_dir.mkdir(parents=True, exist_ok=True)
-    db_bench_helper_script = f"{str(db_bench_helper_path.resolve())} {str(db_bench_num_iter)}"
+    db_bench_cmd = f"{db_bench_helper_path.resolve()} {db_bench_num_iter}"
 
     logger_cmd = [
         str(logger_path),
         str(numa_count),
         str(interval),
         "-r",
-        db_bench_helper_script
+        db_bench_cmd
     ]
 
     print(
@@ -234,7 +234,6 @@ def run_benchmark_and_logger(
     try:
         result = subprocess.run(
             logger_cmd,
-            shell=True,
             check=True,
             cwd=run_dir,
             capture_output=True,
