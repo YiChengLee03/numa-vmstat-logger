@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import argparse
+import math
+import os
+from pathlib import Path
+import re
 import subprocess
 import sys
-import math
-from pathlib import Path
 from typing import Dict, List, Sequence, Tuple
-import re
+from venv import logger
 
 POLICY_COMMANDS: Dict[str, List[str]] = {
     "default": [],
@@ -149,16 +151,26 @@ def detect_numa_nodes() -> int:
 
 
 def ensure_binaries(db_bench_path: Path, logger_path: Path) -> None:
-    if not db_bench_path.is_file():
+    expanded_db_bench_path = db_bench_path.expanduser()
+    expanded_logger_path = logger_path.expanduser()
+
+    if not expanded_db_bench_path.is_file():
         raise FileNotFoundError(
             f"rocksdb/db_bench binary not found at {db_bench_path}. "
             "Build it first (e.g. make db_bench -j$(nproc))."
         )
-    if not logger_path.is_file():
+    if not expanded_logger_path.is_file():
         raise FileNotFoundError(
             f"numa_stat_logger binary not found at {logger_path}. "
             "Run `make -C src` or `make` from the project root to build it."
         )
+
+    if not os.access(expanded_db_bench_path, os.X_OK):
+        raise PermissionError(
+            f"db_bench found, but lacks execute permission: {expanded_db_bench_path}.")
+    if not os.access(expanded_logger_path, os.X_OK):
+        raise PermissionError(
+            f"logger found, but lacks execute permission: {expanded_logger_path}.")
 
 
 def generate_num_intervals(
