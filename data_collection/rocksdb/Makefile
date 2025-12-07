@@ -3,7 +3,7 @@ BENCH_SCRIPT := benchmark_script.sh
 LOGS_DIR := rocksdb_logs/
 LOGGER_BINARY := $(LOGGER_DIR)/numa_stat_logger
 
-RUNS ?= 20
+RUNS ?= 100
 START_RUN ?= 1
 INTERVAL ?= 0.1
 POLICIES ?= default
