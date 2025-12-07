@@ -8,8 +8,8 @@ START_RUN ?= 1
 INTERVAL ?= 0.1
 POLICIES ?= default
 
-RAW_FILE ?= $(LOGS_DIR)/raw_start_$(START_RUN)_policy_default.csv
-PREPROCESSED_FILE ?= $(LOGS_DIR)/features_start_$(START_RUN)_policy_default.csv
+RAW_FILE ?= $(LOGS_DIR)raw_start_$(START_RUN)_policy_default.csv
+PREPROCESSED_FILE ?= $(LOGS_DIR)features_start_$(START_RUN)_policy_default.csv
 
 .PHONY: clean logger permissions run preprocess \
         interleave preferred_0 preferred_1 default_policy all_policies
@@ -62,15 +62,18 @@ run: logger permissions
 
 # Preprocess logged CSV
 preprocess:
-	@echo "Using RAW=$(RAW_FILE)"
-	@echo "Using OUT=$(PREPROCESSED_FILE)"
+	@echo "Preprocessing RAW=$(RAW_FILE) -> OUT=$(PREPROCESSED_FILE)"
 	@test -d .venv || python3 -m venv .venv
-	@bash -c " \
-		source .venv/bin/activate && \
-		pip install --upgrade pip && \
-		pip install pandas && \
-		python3 preprocess_rocksdb_log.py --input_csv $(RAW_FILE) --output_csv $(PREPROCESSED_FILE) \
-	"
+	@bash -c '. .venv/bin/activate && \
+		pip install --quiet --upgrade pip && \
+		pip install --quiet pandas && \
+		echo "Running preprocess_rocksdb_log.py" && \
+		echo "  Input CSV      : $(RAW_FILE)" && \
+		echo "  Output CSV     : $(PREPROCESSED_FILE)" && \
+		echo "----------------------------------------" && \
+		python3 preprocess_rocksdb_log.py \
+			--input-csv "$(RAW_FILE)" \
+			--output-csv "$(PREPROCESSED_FILE)"'
 
 ########################################
 # NUMA policy convenience targets
@@ -78,27 +81,27 @@ preprocess:
 
 default_policy:
 	make run POLICIES=default \
-	     RAW_FILE=$(LOGS_DIR)/raw_start_$(START_RUN)_policy_default.csv
-	make preprocess PREPROCESSED_FILE=$(LOGS_DIR)/features_start_$(START_RUN)_policy_default.csv \
-	                RAW_FILE=$(LOGS_DIR)/raw_start_$(START_RUN)_policy_default.csv
+	     RAW_FILE=$(LOGS_DIR)raw_start_$(START_RUN)_policy_default.csv
+	make preprocess PREPROCESSED_FILE=$(LOGS_DIR)features_start_$(START_RUN)_policy_default.csv \
+	                RAW_FILE=$(LOGS_DIR)raw_start_$(START_RUN)_policy_default.csv
 
 interleave:
 	numactl --interleave=all \
 	make run POLICIES=interleave \
-	     RAW_FILE=$(LOGS_DIR)/raw_start_$(START_RUN)_policy_interleave.csv
-	make preprocess PREPROCESSED_FILE=$(LOGS_DIR)/features_start_$(START_RUN)_policy_interleave.csv \
-	                RAW_FILE=$(LOGS_DIR)/raw_start_$(START_RUN)_policy_interleave.csv
+	     RAW_FILE=$(LOGS_DIR)raw_start_$(START_RUN)_policy_interleave.csv
+	make preprocess PREPROCESSED_FILE=$(LOGS_DIR)features_start_$(START_RUN)_policy_interleave.csv \
+	                RAW_FILE=$(LOGS_DIR)raw_start_$(START_RUN)_policy_interleave.csv
 
 preferred_0:
 	numactl --preferred=0 \
 	make run POLICIES=preferred_0 \
-	     RAW_FILE=$(LOGS_DIR)/raw_start_$(START_RUN)_policy_preferred_0.csv
-	make preprocess PREPROCESSED_FILE=$(LOGS_DIR)/features_start_$(START_RUN)_policy_preferred_0.csv \
-	                RAW_FILE=$(LOGS_DIR)/raw_start_$(START_RUN)_policy_preferred_0.csv
+	     RAW_FILE=$(LOGS_DIR)raw_start_$(START_RUN)_policy_preferred_0.csv
+	make preprocess PREPROCESSED_FILE=$(LOGS_DIR)features_start_$(START_RUN)_policy_preferred_0.csv \
+	                RAW_FILE=$(LOGS_DIR)raw_start_$(START_RUN)_policy_preferred_0.csv
 
 preferred_1:
 	numactl --preferred=1 \
 	make run POLICIES=preferred_1 \
-	     RAW_FILE=$(LOGS_DIR)/raw_start_$(START_RUN)_policy_preferred_1.csv
-	make preprocess PREPROCESSED_FILE=$(LOGS_DIR)/features_start_$(START_RUN)_policy_preferred_1.csv \
-	                RAW_FILE=$(LOGS_DIR)/raw_start_$(START_RUN)_policy_preferred_1.csv
+	     RAW_FILE=$(LOGS_DIR)raw_start_$(START_RUN)_policy_preferred_1.csv
+	make preprocess PREPROCESSED_FILE=$(LOGS_DIR)features_start_$(START_RUN)_policy_preferred_1.csv \
+	                RAW_FILE=$(LOGS_DIR)raw_start_$(START_RUN)_policy_preferred_1.csv
